@@ -83,7 +83,7 @@ router.post(
       //res.send('User registered');
     } catch (err) {
       console.error(err.message);
-      return res.status(500).send('Server error');
+      res.status(500).send('Server error');
     }
   }
 );
