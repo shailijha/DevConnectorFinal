@@ -127,7 +127,7 @@ const AddEducation = ({ addEducation, history }) => {
             id=''
             cols='30'
             rows='5'
-            placeholder='Job Description'
+            placeholder='Program Description'
             value={description}
             onChange={e => onChange(e)}
           />
