@@ -10,10 +10,10 @@ const PostItem = ({
 }) => (
   <div class='post bg-white my-1 p-1'>
     <div>
-      <a href='profile.html'>
+      <Link to={`/profile/${user}`}>
         <img class='round-image' src={avatar} alt='' />
         <h4>{name}</h4>
-      </a>
+      </Link>
     </div>
     <div>
       <p class='my-1'>{text}</p>
