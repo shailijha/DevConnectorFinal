@@ -250,4 +250,66 @@ router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
   }
 });
 
+// @route POST api/posts/comment/:id/:comment_id
+// @desc Update a comment
+// @access Private
+
+router.post(
+  '/comment/:id/:comment_id',
+  [
+    auth,
+    [
+      check('text', 'Text is required')
+        .not()
+        .isEmpty()
+    ]
+  ],
+  async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id).select('-password');
+      const post = await Post.findById(req.params.id);
+      // Pull out comment
+      const comment = post.comments.find(
+        comment => comment.id === req.params.comment_id
+      );
+
+      // if comment does not exist
+      if (!comment) {
+        return res.status(404).json({ msg: 'Comment does not exist' });
+      }
+
+      //Check user
+
+      if (comment.user.toString() !== req.user.id) {
+        return res.status(401).json({ msg: 'Unauthorized user' });
+      }
+
+      const updateIndex = post.comments.findIndex(
+        comment => comment._id == req.params.comment_id
+      );
+      /*console.log(req.params.comment_id);
+    console.log('post comments');
+    console.log(post.comments);
+    console.log(post.comments.findIndex(x => x._id == req.params.comment_id));*/
+
+      const updatedComment = {
+        text: req.body.text,
+        name: user.name,
+        avatar: user.avatar,
+        user: req.user.id
+      };
+
+      post.comments.splice(updateIndex, 1, updatedComment);
+      //console.log('post comments after splicing');
+      //console.log(post.comments);
+      await post.save();
+
+      res.json(post.comments);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Server error');
+    }
+  }
+);
+
 module.exports = router;
